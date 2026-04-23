@@ -17,9 +17,12 @@ def carregar_dados():
     base_path = os.path.dirname(__file__)
     file_path = os.path.abspath(os.path.join(base_path, '..', 'data', 'SPGlobal_Export_4-14-2026_FinalVersion.csv'))
 
+    if not os.path.exists(file_path):
+        return []
+
     dados = []
 
-    with open(file_path, newline='', encoding='utf-8') as csvfile:
+    with open(file_path, newline='', encoding='latin-1') as csvfile:
         reader = csv.reader(csvfile)
 
         for _ in range(5):
