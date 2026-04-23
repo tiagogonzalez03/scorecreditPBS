@@ -6,18 +6,24 @@ import os
 app = Flask(__name__)
 CORS(app)
 
+dados_cache = None
+
 def carregar_dados():
+    global dados_cache
+
+    if dados_cache is not None:
+        return dados_cache
+
     base_path = os.path.dirname(__file__)
-    file_path = os.path.join(base_path, '..', 'data', 'SPGlobal_Export_4-14-2026_FinalVersion.csv')
+    file_path = os.path.abspath(os.path.join(base_path, '..', 'data', 'SPGlobal_Export_4-14-2026_FinalVersion.csv'))
 
     dados = []
 
     with open(file_path, newline='', encoding='utf-8') as csvfile:
         reader = csv.reader(csvfile)
-        
-        # pula linhas iniciais
+
         for _ in range(5):
-            next(reader)
+            next(reader, None)
 
         for row in reader:
             try:
@@ -44,13 +50,15 @@ def carregar_dados():
                     "Rating": rating
                 })
 
-            except:
+            except Exception:
                 continue
 
-    return dados
+    dados_cache = dados
+    return dados_cache
 
 
-@app.route('/api')
+@app.route('/api/index')
+@app.route('/api/index/')
 def api():
     empresa_query = request.args.get('empresa', '').lower()
     dados = carregar_dados()
