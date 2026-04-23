@@ -57,8 +57,8 @@ def carregar_dados():
     return dados_cache
 
 
-@app.route('/api/index')
-@app.route('/api/index/')
+@app.route('/api')
+@app.route('/api/')
 def api():
     empresa_query = request.args.get('empresa', '').lower()
     dados = carregar_dados()
